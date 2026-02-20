@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}findStyle | Your Fashion Destination{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'app/css/main.css' %}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="nav-logo">
+            <i class="fa-solid fa-shirt"></i> findStyle
+        </a>
+        <div class="search-container">
+            <form action="{% url 'product_list' %}" method="get" class="search-form">
+                <input type="text" name="q" class="search-input" placeholder="Discover anything..."
+                    value="{{ request.GET.q|default:'' }}">
+                <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+        </div>
+        <div class="nav-actions">
+            {% if user.is_authenticated %}
+            <div style="display:flex;align-items:center;gap:20px;">
+                <span style="color:var(--text-muted);font-size:0.9rem;">Welcome,
+                    <strong>{{ user.username }}</strong></span>
+                {% if user.profile.role == 'seller' %}
+                <a href="{% url 'seller_dashboard' %}" class="nav-item" title="Seller Dashboard"><i class="fa-solid fa-store"></i>
+                    Seller</a>
+                {% else %}
+                <a href="{% url 'orders' %}" class="nav-item" title="Your Orders"><i class="fa-solid fa-box"></i>
+                    Orders</a>
+                <a href="{% url 'wishlist' %}" class="nav-item" title="Your Wishlist"><i class="fa-solid fa-heart"></i>
+                    Wishlist</a>
+                {% endif %}
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-item"
+                        style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-family:inherit;">Sign
+                        Out</button>
+                </form>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="nav-item">Sign In</a>
+            <a href="{% url 'register' %}" class="btn btn-primary" style="width:auto;margin-bottom:0;">Join Now</a>
+            {% endif %}
+            {% if not user.is_authenticated %}
+            <a href="{% url 'cart_detail' %}" class="nav-item cart-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+                {% if cart %}
+                    {% with cart_count=cart.cartitem_set.count %}
+                        {% if cart_count %}
+                            <span id="cart-count-badge" class="cart-count">{{ cart_count }}</span>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+            </a>
+            {% else %}
+                {% if user.profile.role != 'seller' %}
+                <a href="{% url 'cart_detail' %}" class="nav-item cart-icon">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    {% if cart %}
+                        {% with cart_count=cart.cartitem_set.count %}
+                            {% if cart_count %}
+                                <span id="cart-count-badge" class="cart-count">{{ cart_count }}</span>
+                            {% endif %}
+                        {% endwith %}
+                    {% endif %}
+                </a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </nav>
+    <div class="main-container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}"
+            style="margin-bottom:30px;padding:15px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:var(--bg-surface);">
+            {{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+
+    
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} toast-icon"></i>
+                <div class="toast-content">${message}</div>
+            `;
+
+            container.appendChild(toast);
+
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.3s forwards';
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.body.addEventListener('click', function (e) {
+                if (e.target.classList.contains('ajax-add-to-cart') || e.target.closest('.ajax-add-to-cart')) {
+                    e.preventDefault();
+                    const btn = e.target.classList.contains('ajax-add-to-cart') ? e.target : e.target.closest('.ajax-add-to-cart');
+                    const productId = btn.getAttribute('data-product-id');
+                    const url = btn.getAttribute('href');
+
+                    // Check for selected size
+                    const sizeRadio = document.querySelector('input[name="selected_size"]:checked');
+                    let selectedSize = '';
+                    
+                    if (sizeRadio) {
+                        selectedSize = sizeRadio.value;
+                    }
+
+                    const formData = new FormData();
+                    if (selectedSize) {
+                        formData.append('selected_size', selectedSize);
+                    }
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+                        },
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                showToast(data.message, 'success');
+                                // Update cart count
+                                const cartCountBadge = document.getElementById('cart-count-badge');
+                                if (cartCountBadge) {
+                                    cartCountBadge.innerText = data.cart_count;
+                                    cartCountBadge.style.display = 'block';
+                                } else {
+                                    location.reload();
+                                }
+                            } else {
+                                showToast(data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            window.location.href = url;
+                        });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

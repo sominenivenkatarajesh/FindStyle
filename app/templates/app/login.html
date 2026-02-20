@@ -1,0 +1,33 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 500px; margin: 40px auto;">
+    <h1 style="text-align: center; margin-bottom: 30px;">Welcome </h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label style="display: block; margin-bottom: 8px; font-weight: 500;">{{ field.label }}</label>
+            <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.html_name }}"
+                id="{{ field.id_for_label }}" class="form-input" required>
+            {% if field.errors %}
+            <p style="color: var(--error); font-size: 0.8rem;">{{ field.errors.0 }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <!-- role selection removed (seller functionality removed) -->
+        <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Authorize Access</button>
+    </form>
+
+    <p style="text-align: center; margin-top: 20px;">
+        <a href="{% url 'password_reset' %}"
+            style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">Forgot Password?</a>
+    </p>
+
+    <p style="text-align: center; margin-top: 25px; color: var(--text-muted);">
+        Don't have an account? <a href="{% url 'register' %}" style="color: var(--primary); text-decoration: none;">Join
+            the Collective</a>
+    </p>
+</div>
+{% endblock %}

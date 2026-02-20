@@ -1,0 +1,80 @@
+{% extends 'app/base.html' %}
+{% block title %}My Wishlist | findStyle{% endblock %}
+{% block content %}
+<style>
+.wl-head{margin-bottom:36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.wl-title{font-size:2.4rem;font-weight:900;background:linear-gradient(90deg,#fff,#ec4899);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin:0;}
+.wl-count{background:rgba(236,72,153,0.12);border:1px solid rgba(236,72,153,0.25);color:#ec4899;padding:6px 16px;border-radius:20px;font-size:0.85rem;font-weight:700;}
+.wl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px;}
+.wl-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:18px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s;position:relative;}
+.wl-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.35);border-color:rgba(236,72,153,0.3);}
+.wl-img{height:230px;background:#111;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.wl-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
+.wl-card:hover .wl-img img{transform:scale(1.05);}
+.wl-remove{position:absolute;top:12px;right:12px;}
+.wl-remove form button{background:rgba(220,38,38,0.2);backdrop-filter:blur(6px);border:1px solid rgba(220,38,38,0.3);border-radius:50%;width:36px;height:36px;cursor:pointer;color:#ef4444;display:flex;align-items:center;justify-content:center;font-size:0.95rem;transition:all 0.2s;}
+.wl-remove form button:hover{background:rgba(220,38,38,0.35);transform:scale(1.1);}
+.wl-body{padding:18px 18px 6px;}
+.wl-cat{font-size:0.7rem;font-weight:700;color:#ec4899;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;}
+.wl-name{font-size:1rem;font-weight:700;color:#fff;margin:0 0 8px;line-height:1.3;}
+.wl-price{font-size:1.2rem;font-weight:900;color:#a78bfa;margin-bottom:16px;}
+.wl-actions{padding:0 18px 18px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.wl-btn-cart{padding:9px;border-radius:10px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);color:#a78bfa;font-size:0.82rem;font-weight:700;text-decoration:none;text-align:center;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.wl-btn-cart:hover{background:rgba(167,139,250,0.25);color:#a78bfa;}
+.wl-btn-buy{padding:9px;border-radius:10px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;font-size:0.82rem;font-weight:700;text-decoration:none;text-align:center;transition:opacity 0.2s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.wl-btn-buy:hover{opacity:0.88;color:#fff;}
+.wl-empty{text-align:center;padding:90px 30px;background:rgba(255,255,255,0.02);border-radius:20px;border:1px dashed rgba(236,72,153,0.15);}
+@media(max-width:500px){.wl-grid{grid-template-columns:repeat(auto-fill,minmax(165px,1fr));}.wl-img{height:170px;}}
+</style>
+
+<div class="glass-panel">
+<div class="wl-head">
+<h1 class="wl-title"><i class="fa-solid fa-heart" style="margin-right:12px;font-size:1.8rem;background:linear-gradient(135deg,#ec4899,#f43f5e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;"></i>My Wishlist</h1>
+{% if wishlist.products.exists %}
+<span class="wl-count">{{ wishlist.products.count }} item{% if wishlist.products.count != 1 %}s{% endif %} saved</span>
+{% endif %}
+</div>
+
+{% if wishlist.products.exists %}
+<div class="wl-grid">
+{% for product in wishlist.products.all %}
+<div class="wl-card">
+<a href="{% url 'product_detail' product.id %}" style="text-decoration:none;">
+<div class="wl-img">
+{% if product.image %}
+<img src="{{ product.image.url }}" alt="{{ product.name }}">
+{% else %}
+<i class="fa-solid fa-shirt" style="font-size:3rem;color:rgba(255,255,255,0.08);"></i>
+{% endif %}
+</div>
+</a>
+<div class="wl-remove">
+<form action="{% url 'toggle_wishlist' product.id %}" method="POST">
+{% csrf_token %}
+<button type="submit" title="Remove from wishlist"><i class="fa-solid fa-heart"></i></button>
+</form>
+</div>
+<div class="wl-body">
+<div class="wl-cat">{{ product.category.name|default:"Fashion" }}</div>
+<div class="wl-name">{{ product.name }}</div>
+<div class="wl-price">&#8377;{{ product.price|floatformat:0 }}</div>
+</div>
+<div class="wl-actions">
+<a href="{% url 'add_to_cart' product.id %}" class="wl-btn-cart ajax-add-to-cart" data-product-id="{{ product.id }}"><i class="fa-solid fa-bag-shopping"></i> Add to Bag</a>
+<a href="{% url 'buy_now' product.id %}" class="wl-btn-buy"><i class="fa-solid fa-bolt"></i> Buy Now</a>
+</div>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<div class="wl-empty">
+<div style="width:110px;height:110px;background:rgba(236,72,153,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;">
+<i class="fa-regular fa-heart" style="font-size:3.5rem;color:#ec4899;opacity:0.4;"></i>
+</div>
+<h3 style="font-size:1.8rem;margin-bottom:10px;">Your wishlist is empty</h3>
+<p style="color:#94a3b8;max-width:420px;margin:0 auto 30px;">Tap the heart icon on any product to save it here — shoes, dresses, kids' wear and more.</p>
+<a href="{% url 'product_list' %}" class="btn btn-primary" style="width:auto;padding:13px 44px;border-radius:30px;display:inline-flex;align-items:center;gap:8px;"><i class="fa-solid fa-bag-shopping"></i> Browse Collection</a>
+</div>
+{% endif %}
+</div>
+{% endblock %}

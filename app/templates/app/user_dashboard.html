@@ -1,0 +1,94 @@
+{% extends 'app/base.html' %}
+{% block title %}My Account | findStyle{% endblock %}
+{% block content %}
+<style>
+.ud-greeting{margin-bottom:36px;}
+.ud-greeting h1{font-size:2.2rem;font-weight:900;color:#fff;margin:0 0 6px;}
+.ud-greeting h1 span{background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.ud-greeting p{color:#94a3b8;margin:0;}
+.ud-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-bottom:36px;}
+.ud-tile{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:26px;text-decoration:none;color:inherit;transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s;display:flex;align-items:center;gap:20px;}
+.ud-tile:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(0,0,0,0.3);border-color:rgba(167,139,250,0.3);}
+.ud-tile-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.ud-tile-text h3{margin:0 0 4px;font-size:1.05rem;font-weight:700;color:#fff;}
+.ud-tile-text p{margin:0;color:#94a3b8;font-size:0.82rem;line-height:1.4;}
+.ud-tile-arrow{margin-left:auto;color:#94a3b8;font-size:0.9rem;}
+.ud-banner{background:linear-gradient(135deg,#1e1b4b,#3b0764);border:1px solid rgba(167,139,250,0.15);border-radius:20px;padding:44px;text-align:center;position:relative;overflow:hidden;}
+.ud-banner::before{content:'';position:absolute;top:-50px;left:-80px;width:250px;height:250px;background:radial-gradient(circle,rgba(167,139,250,0.15) 0%,transparent 70%);pointer-events:none;}
+.ud-banner::after{content:'';position:absolute;bottom:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(236,72,153,0.12) 0%,transparent 70%);pointer-events:none;}
+.ud-banner h2{font-size:1.8rem;font-weight:800;color:#fff;margin:0 0 10px;}
+.ud-banner p{color:#94a3b8;margin:0 0 24px;max-width:440px;margin-left:auto;margin-right:auto;}
+.cats-strip{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+.cat-chip{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);padding:6px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;text-decoration:none;transition:all 0.2s;}
+.cat-chip:hover{background:rgba(167,139,250,0.2);border-color:rgba(167,139,250,0.4);color:#a78bfa;}
+@media(max-width:500px){.ud-grid{grid-template-columns:1fr;}.ud-banner{padding:28px 18px;}}
+</style>
+
+<div class="glass-panel">
+<div class="ud-greeting">
+<h1>Welcome back, <span>{{ user.get_full_name|default:user.username }}</span> 👋</h1>
+<p>Manage your orders, wishlist, and shopping preferences.</p>
+</div>
+
+<div class="ud-grid">
+<a href="{% url 'orders' %}" class="ud-tile">
+<div class="ud-tile-icon" style="background:rgba(99,102,241,0.12);">
+<i class="fa-solid fa-box-archive" style="color:#6366f1;"></i>
+</div>
+<div class="ud-tile-text">
+<h3>My Orders</h3>
+<p>Track, return or buy items again</p>
+</div>
+<i class="fa-solid fa-chevron-right ud-tile-arrow"></i>
+</a>
+
+<a href="{% url 'wishlist' %}" class="ud-tile">
+<div class="ud-tile-icon" style="background:rgba(236,72,153,0.12);">
+<i class="fa-solid fa-heart" style="color:#ec4899;"></i>
+</div>
+<div class="ud-tile-text">
+<h3>Wishlist</h3>
+<p>Saved items — shoes, dresses & more</p>
+</div>
+<i class="fa-solid fa-chevron-right ud-tile-arrow"></i>
+</a>
+
+<a href="{% url 'cart_detail' %}" class="ud-tile">
+<div class="ud-tile-icon" style="background:rgba(16,185,129,0.12);">
+<i class="fa-solid fa-bag-shopping" style="color:#10b981;"></i>
+</div>
+<div class="ud-tile-text">
+<h3>Shopping Bag</h3>
+<p>View and checkout your selected items</p>
+</div>
+<i class="fa-solid fa-chevron-right ud-tile-arrow"></i>
+</a>
+
+<div class="ud-tile" style="cursor:default;">
+<div class="ud-tile-icon" style="background:rgba(139,92,246,0.12);">
+<i class="fa-solid fa-shield-halved" style="color:#8b5cf6;"></i>
+</div>
+<div class="ud-tile-text">
+<h3>Security</h3>
+<p>Passwords &amp; account preferences</p>
+</div>
+</div>
+</div>
+
+<div class="ud-banner">
+<h2><i class="fa-solid fa-fire" style="color:#f59e0b;margin-right:10px;"></i>New Season, New Looks</h2>
+<p>Explore our latest arrivals in shoes and dresses for Men, Women, Kids and Babies — all at unbeatable prices.</p>
+<div class="cats-strip">
+<a href="{% url 'product_list' %}?category=men" class="cat-chip"><i class="fa-solid fa-person"></i> Men</a>
+<a href="{% url 'product_list' %}?category=women" class="cat-chip"><i class="fa-solid fa-person-dress"></i> Women</a>
+<a href="{% url 'product_list' %}?category=kids" class="cat-chip"><i class="fa-solid fa-child"></i> Kids</a>
+<a href="{% url 'product_list' %}?category=baby" class="cat-chip"><i class="fa-solid fa-baby"></i> Baby</a>
+<a href="{% url 'product_list' %}?category=shoes" class="cat-chip"><i class="fa-solid fa-shoe-prints"></i> Shoes</a>
+<a href="{% url 'product_list' %}?category=dresses" class="cat-chip"><i class="fa-solid fa-vest"></i> Dresses</a>
+</div>
+<a href="{% url 'product_list' %}" class="btn btn-primary" style="width:auto;padding:13px 40px;border-radius:30px;display:inline-flex;align-items:center;gap:8px;">
+<i class="fa-solid fa-bag-shopping"></i> Shop Now
+</a>
+</div>
+</div>
+{% endblock %}

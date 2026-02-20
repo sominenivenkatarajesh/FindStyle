@@ -1,0 +1,93 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="main-container">
+    <div class="glass-panel">
+        <h2
+            style="margin-bottom: 30px; background: linear-gradient(90deg, white, var(--text-muted)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 2.5rem;">
+            Shopping Cart</h2>
+
+        {% if cart and cart.cartitem_set.count > 0 %}
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px;">
+            <div class="cart-items-list">
+                {% for item in cart.cartitem_set.all %}
+                <div class="card"
+                    style="margin-bottom: 20px; padding: 25px; display: flex; gap: 30px; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px;">
+                    <div
+                        style="width: 120px; height: 120px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 10px;">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                            style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        {% else %}
+                        <i class="fas fa-box" style="font-size: 2.5rem; color: #cbd5e1;"></i>
+                        {% endif %}
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3 style="margin: 0; font-size: 1.4rem;">{{ item.product.name }}</h3>
+                            <span style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">&#8377;{{ item.product.price|floatformat:0 }}</span>
+                        </div>
+                        <p style="color: var(--success); font-size: 0.9rem; margin: 10px 0;">In Stock{% if item.selected_size %} | Size: <strong>{{ item.selected_size }}</strong>{% endif %}</p>
+
+                        <div style="display: flex; align-items: center; gap: 20px; margin-top: 20px;">
+                            <div
+                                style="display: flex; align-items: center; background: var(--bg-surface); border-radius: 12px; padding: 5px; border: 1px solid rgba(255,255,255,0.05);">
+                                <a href="{% url 'update_cart_quantity' item.id 'decrement' %}"
+                                    style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 8px; color: white; text-decoration: none; font-weight: 800;">-</a>
+                                <span style="width: 40px; text-align: center; font-weight: 700;">{{ item.quantity }}</span>
+                                <a href="{% url 'update_cart_quantity' item.id 'increment' %}"
+                                    style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: var(--primary); border-radius: 8px; color: white; text-decoration: none; font-weight: 800;">+</a>
+                            </div>
+                            <span style="color: rgba(255,255,255,0.1);">|</span>
+                            <a href="{% url 'remove_from_cart' item.id %}"
+                                style="color: var(--error); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Remove</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-summary">
+                <div class="glass-panel"
+                    style="background: rgba(255,255,255,0.02); position: sticky; top: 100px; padding: 30px; border-radius: 20px;">
+                    <h3 style="margin-top: 0; font-size: 1.4rem;">Order Summary</h3>
+                    <div style="margin: 25px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span style="color: var(--text-muted);">Subtotal ({{ cart.cartitem_set.count }}
+                                items)</span>
+                            <span style="font-weight: 600;">&#8377;{{ cart.total_price|floatformat:0 }}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span style="color: var(--text-muted);">Shipping</span>
+                            <span style="color: var(--success);">FREE</span>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <span style="font-size: 1.3rem; font-weight: 800;">Total</span>
+                            <span style="font-size: 1.3rem; font-weight: 800; color: var(--primary);">&#8377;{{ cart.total_price|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                    <a href="{% url 'checkout' %}" class="btn btn-primary"
+                        style="padding: 15px; font-size: 1.1rem; border-radius: 15px; margin-bottom: 10px;">Proceed to
+                        Checkout</a>
+                    <a href="{% url 'product_list' %}" class="btn btn-outline"
+                        style="padding: 12px; font-size: 0.95rem; border-radius: 12px;">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 100px 40px;">
+            <div
+                style="width: 120px; height: 120px; background: var(--bg-surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
+                <i class="fa-solid fa-cart-shopping"
+                    style="font-size: 3.5rem; color: var(--primary); opacity: 0.3;"></i>
+            </div>
+            <h3 style="font-size: 2rem; margin-bottom: 15px;">Your shopping cart is empty</h3>
+            <p style="color: var(--text-muted); max-width: 450px; margin: 0 auto 40px;">Looks like you haven't added
+                anything to your cart yet. Explore our collection and find something you love!</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary"
+                style="width: auto; padding: 15px 50px; border-radius: 30px; font-size: 1.1rem;">Shop Our Products</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
