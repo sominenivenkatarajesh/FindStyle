@@ -29,8 +29,9 @@
             <div style="display:flex;align-items:center;gap:20px;">
                 <span style="color:var(--text-muted);font-size:0.9rem;">Welcome,
                     <strong>{{ user.username }}</strong></span>
-                {% if user.profile.role == 'seller' %}
-                <a href="{% url 'seller_dashboard' %}" class="nav-item" title="Seller Dashboard"><i class="fa-solid fa-store"></i>
+                {% if profile.role == 'seller' %}
+                <a href="{% url 'seller_dashboard' %}" class="nav-item" title="Seller Dashboard"><i
+                        class="fa-solid fa-store"></i>
                     Seller</a>
                 {% else %}
                 <a href="{% url 'orders' %}" class="nav-item" title="Your Orders"><i class="fa-solid fa-box"></i>
@@ -53,26 +54,26 @@
             <a href="{% url 'cart_detail' %}" class="nav-item cart-icon">
                 <i class="fa-solid fa-bag-shopping"></i>
                 {% if cart %}
-                    {% with cart_count=cart.cartitem_set.count %}
-                        {% if cart_count %}
-                            <span id="cart-count-badge" class="cart-count">{{ cart_count }}</span>
-                        {% endif %}
-                    {% endwith %}
+                {% with cart_count=cart.cartitem_set.count %}
+                {% if cart_count %}
+                <span id="cart-count-badge" class="cart-count">{{ cart_count }}</span>
+                {% endif %}
+                {% endwith %}
                 {% endif %}
             </a>
             {% else %}
-                {% if user.profile.role != 'seller' %}
-                <a href="{% url 'cart_detail' %}" class="nav-item cart-icon">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    {% if cart %}
-                        {% with cart_count=cart.cartitem_set.count %}
-                            {% if cart_count %}
-                                <span id="cart-count-badge" class="cart-count">{{ cart_count }}</span>
-                            {% endif %}
-                        {% endwith %}
-                    {% endif %}
-                </a>
+            {% if profile.role != 'seller' %}
+            <a href="{% url 'cart_detail' %}" class="nav-item cart-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+                {% if cart %}
+                {% with cart_count=cart.cartitem_set.count %}
+                {% if cart_count %}
+                <span id="cart-count-badge" class="cart-count">{{ cart_count }}</span>
                 {% endif %}
+                {% endwith %}
+                {% endif %}
+            </a>
+            {% endif %}
             {% endif %}
         </div>
     </nav>
@@ -86,9 +87,58 @@
         {% endif %}
         {% block content %}{% endblock %}
     </div>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-row">
+                <div class="footer-col about">
+                    <a href="{% url 'home' %}" class="nav-logo" style="margin-bottom: 20px;">
+                        <i class="fa-solid fa-shirt"></i> findStyle
+                    </a>
+                    <p>Elevate your style with curated fashion from around the globe. We bring you the latest trends
+                        with a touch of elegance.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#"><i class="fa-brands fa-pinterest"></i></a>
+                    </div>
+                </div>
 
-    
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="{% url 'product_list' %}">All Products</a></li>
+                        <li><a href="{% url 'product_list' %}?category=men">Men's Fashion</a></li>
+                        <li><a href="{% url 'product_list' %}?category=women">Women's Fashion</a></li>
+                        <li><a href="{% url 'product_list' %}?category=accessories">Accessories</a></li>
+                    </ul>
+                </div>
 
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Returns & Exchanges</a></li>
+                        <li><a href="#">FAQs</a></li>
+                    </ul>
+                </div>
+
+
+            </div>
+
+            <div class="footer-bottom">
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px;">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2026 findStyle. All rights reserved.</p>
+                    <div class="footer-legal">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
     <!-- Toast Notifications Container -->
     <div id="toast-container" class="toast-container"></div>
 
@@ -122,12 +172,13 @@
                     e.preventDefault();
                     const btn = e.target.classList.contains('ajax-add-to-cart') ? e.target : e.target.closest('.ajax-add-to-cart');
                     const productId = btn.getAttribute('data-product-id');
-                    const url = btn.getAttribute('href');
+                    const url = btn.getAttribute('href') || btn.getAttribute('formaction') || btn.closest('form')?.getAttribute('action');
+                    if (!url || url === 'null') return;
 
                     // Check for selected size
                     const sizeRadio = document.querySelector('input[name="selected_size"]:checked');
                     let selectedSize = '';
-                    
+
                     if (sizeRadio) {
                         selectedSize = sizeRadio.value;
                     }
@@ -157,6 +208,27 @@
                                 } else {
                                     location.reload();
                                 }
+                                
+                                // If on wishlist page, remove the card visually
+                                if (window.location.pathname.includes('/wishlist')) {
+                                    const wlCard = btn.closest('.wl-card');
+                                    if (wlCard) {
+                                        wlCard.remove();
+                                        const countElem = document.querySelector('.wl-count');
+                                        if (countElem) {
+                                            const currentCountElem = countElem.innerText.match(/\d+/);
+                                            if (currentCountElem) {
+                                                const remain = parseInt(currentCountElem[0]) - 1;
+                                                if (remain === 0) {
+                                                    location.reload(); // reload for empty state
+                                                } else {
+                                                    countElem.innerText = remain + " item" + (remain !== 1 ? "s" : "") + " saved";
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
                             } else {
                                 showToast(data.message, 'error');
                             }

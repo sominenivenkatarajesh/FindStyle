@@ -1,11 +1,14 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-azc-yh4192+_!pj%1wts=4b_o_warq%os*gnq&ova$a8vo6tr!'
-DEBUG = True
-ALLOWED_HOSTS = []
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-azc-yh4192+_!pj%1wts=4b_o_warq%os*gnq&ova$a8vo6tr!')
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
+ALLOWED_HOSTS = ['*']  # Adjust this if needed for production deployment (e.g. ['yourdomain.com'])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -40,6 +43,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.context_processors.cart_processor',
+                'app.context_processors.profile_processor',
             ],
         },
     },
@@ -47,14 +51,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'store.wsgi.application'
 
-DATABASES ={
-    "default":{
-    "ENGINE":"django.db.backends.postgresql",
-    "NAME":"store",
-    "USER":"postgres",
-    "PASSWORD":"@Rajesh17",
-    "HOST":"localhost",
-    "PORT":"5432",
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME", "store"),
+        "USER": os.getenv("DB_USER", "postgres"),
+        "PASSWORD": os.getenv("DB_PASSWORD", ""),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
 
@@ -84,6 +88,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "venkatrajeshnaidu@gmail.com"
-EMAIL_HOST_PASSWORD = 'shez njxc znkn yofs'
-DEFAULT_FROM_EMAIL = "venkatrajeshnaidu@gmail.com"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "venkatrajeshnaidu@gmail.com")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "venkatrajeshnaidu@gmail.com")

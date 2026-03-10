@@ -1,4 +1,4 @@
-{% extends 'app/base.html' %}
+﻿{% extends 'app/base.html' %}
 
 {% block title %}Checkout - findStyle{% endblock %}
 
@@ -6,9 +6,8 @@
 <div class="main-container">
     {% if success %}
     <div class="glass-panel" style="text-align: center; padding: 80px 40px;">
-        <div
-            style="width: 100px; height: 100px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
-            <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: var(--success);"></i>
+        <div class="success-icon-box">
+            <i class="fa-solid fa-circle-check"></i>
         </div>
         <h1 style="font-size: 2.5rem; margin-bottom: 15px;">Order Placed Successfully!</h1>
         <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px;">Thank you for your purchase. Your
@@ -22,8 +21,7 @@
         </div>
     </div>
     {% else %}
-    <form method="post" id="checkout-form" style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px;"
-        class="checkout-grid">
+    <form method="post" id="checkout-form" class="checkout-grid">
         {% csrf_token %}
         <div class="glass-panel">
             <h2 style="margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;">
@@ -32,8 +30,7 @@
             {% if messages %}
             <div style="margin-bottom: 20px;">
                 {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}"
-                    style="padding: 15px; border-radius: 8px; margin-bottom: 10px; background: rgba(var(--{{ message.tags }}-rgb), 0.1); color: var(--{{ message.tags }}); border: 1px solid rgba(var(--{{ message.tags }}-rgb), 0.2);">
+                <div class="alert alert-{{ message.tags }}">
                     {{ message }}
                 </div>
                 {% endfor %}
@@ -45,18 +42,17 @@
                     <i class="fa-solid fa-location-dot"></i> Shipping Address
                 </h3>
 
-                <div id="address-selection" style="display: grid; gap: 15px; margin-bottom: 20px;">
+                <div id="address-selection" class="address-selection">
                     {% for address in addresses %}
-                    <label class="address-card" style="cursor: pointer; display: block;">
+                    <label class="address-card">
                         {% if forloop.first and not request.POST.address_id %}
-                        <input type="radio" name="address_id" value="{{ address.id }}" checked style="display: none;">
+                        <input type="radio" name="address_id" value="{{ address.id }}" checked>
                         {% elif request.POST.address_id == address.id|stringformat:"s" %}
-                        <input type="radio" name="address_id" value="{{ address.id }}" checked style="display: none;">
+                        <input type="radio" name="address_id" value="{{ address.id }}" checked>
                         {% else %}
-                        <input type="radio" name="address_id" value="{{ address.id }}" style="display: none;">
+                        <input type="radio" name="address_id" value="{{ address.id }}">
                         {% endif %}
-                        <div class="address-content"
-                            style="padding: 20px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 2px solid rgba(255,255,255,0.05); transition: all 0.3s ease;">
+                        <div class="address-content">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                                 <div style="flex: 1;">
                                     <p style="font-weight: 600; margin-bottom: 5px;">{{ address.full_name }}</p>
@@ -72,11 +68,10 @@
                                         {{ address.city }}, {{ address.state }} - {{ address.pincode }}
                                     </p>
                                     <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                                        <i class="fa-solid fa-phone" style="font-size: 0.8rem;"></i> {{
-                                        address.phone_number }}
+                                        <i class="fa-solid fa-phone" style="font-size: 0.8rem;"></i> {{ address.phone_number }}
                                     </p>
                                 </div>
-                                <div class="check-icon" style="opacity: 0; color: var(--primary);">
+                                <div class="check-icon">
                                     <i class="fa-solid fa-circle-check"></i>
                                 </div>
                             </div>
@@ -88,14 +83,13 @@
                         No saved addresses yet.</div>
                     {% endfor %}
 
-                    <label class="address-card" style="cursor: pointer; display: block;">
+                    <label class="address-card">
                         {% if not addresses or request.POST.address_id == "new" %}
-                        <input type="radio" name="address_id" value="new" checked style="display: none;">
+                        <input type="radio" name="address_id" value="new" checked>
                         {% else %}
-                        <input type="radio" name="address_id" value="new" style="display: none;">
+                        <input type="radio" name="address_id" value="new">
                         {% endif %}
-                        <div class="address-content"
-                            style="padding: 20px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 2px solid rgba(255,255,255,0.05); transition: all 0.3s ease;">
+                        <div class="address-content">
                             <p style="margin: 0; display: flex; align-items: center; gap: 10px;">
                                 <i class="fa-solid fa-plus-circle"></i> Add a new address
                             </p>
@@ -103,31 +97,26 @@
                     </label>
                 </div>
 
-                <div id="new-address-form"
-                    style="display: {% if not addresses or request.POST.address_id == 'new' %}block{% else %}none{% endif %}; margin-top: 30px; padding: 30px; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                <div id="new-address-form" class="new-address-panel"
+                    style="display: {% if not addresses or request.POST.address_id == 'new' %}block{% else %}none{% endif %};">
                     <h4 style="margin-top: 0; margin-bottom: 20px;">Shipping Details</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-grid-2">
                         <input type="text" name="full_name" placeholder="Full Name"
-                            value="{{ address_form.full_name.value|default:'' }}"
-                            style="background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 20px; border-radius: 10px; outline: none;">
+                            value="{{ address_form.full_name.value|default:'' }}" class="form-input">
                         <input type="text" name="phone_number" placeholder="Phone Number"
-                            value="{{ address_form.phone_number.value|default:'' }}"
-                            style="background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 20px; border-radius: 10px; outline: none;">
+                            value="{{ address_form.phone_number.value|default:'' }}" class="form-input">
                         <input type="text" name="address_line_1" placeholder="Address Line 1"
-                            value="{{ address_form.address_line_1.value|default:'' }}"
-                            style="grid-column: span 2; background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 20px; border-radius: 10px; outline: none;">
+                            value="{{ address_form.address_line_1.value|default:'' }}" class="form-input"
+                            style="grid-column: span 2;">
                         <input type="text" name="address_line_2" placeholder="Address Line 2 (Optional)"
-                            value="{{ address_form.address_line_2.value|default:'' }}"
-                            style="grid-column: span 2; background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 20px; border-radius: 10px; outline: none;">
+                            value="{{ address_form.address_line_2.value|default:'' }}" class="form-input"
+                            style="grid-column: span 2;">
                         <input type="text" name="city" placeholder="City"
-                            value="{{ address_form.city.value|default:'' }}"
-                            style="background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 20px; border-radius: 10px; outline: none;">
+                            value="{{ address_form.city.value|default:'' }}" class="form-input">
                         <input type="text" name="state" placeholder="State"
-                            value="{{ address_form.state.value|default:'' }}"
-                            style="background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 20px; border-radius: 10px; outline: none;">
+                            value="{{ address_form.state.value|default:'' }}" class="form-input">
                         <input type="text" name="pincode" placeholder="Pincode"
-                            value="{{ address_form.pincode.value|default:'' }}"
-                            style="background: var(--bg-main); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 20px; border-radius: 10px; outline: none;">
+                            value="{{ address_form.pincode.value|default:'' }}" class="form-input">
                     </div>
                 </div>
             </div>
@@ -138,12 +127,10 @@
                 </h3>
                 <div style="display: grid; gap: 15px;">
                     {% for value, label in payment_methods %}
-                    <label class="payment-card" style="cursor: pointer; display: block;">
-                        <input type="radio" name="payment_method" value="{{ value }}" {{ forloop.first|yesno:"checked,"
-                            }} style="display: none;">
-                        <div class="payment-content"
-                            style="padding: 15px 25px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 2px solid rgba(255,255,255,0.05); transition: all 0.3s ease; display: flex; align-items: center; gap: 15px;">
-                            <div class="check-icon" style="color: var(--primary); opacity: 0;">
+                    <label class="payment-card">
+                        <input type="radio" name="payment_method" value="{{ value }}" {{ forloop.first|yesno:"checked," }}>
+                        <div class="payment-content">
+                            <div class="check-icon">
                                 <i class="fa-solid fa-circle-check"></i>
                             </div>
                             <span style="font-weight: 600;">{{ label }}</span>
@@ -155,17 +142,14 @@
         </div>
 
         <div class="cart-summary">
-            <div class="glass-panel"
-                style="background: rgba(255,255,255,0.02); position: sticky; top: 100px; padding: 30px; border-radius: 20px;">
+            <div class="cart-summary-panel">
                 <h3 style="margin-top: 0; font-size: 1.4rem; margin-bottom: 25px;">Order Summary</h3>
-                <div class="checkout-items" style="margin-bottom: 25px;">
+                <div class="checkout-items-mini">
                     {% for item in cart.cartitem_set.all %}
-                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                        <div
-                            style="width: 60px; height: 60px; background: white; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 5px;">
+                    <div class="checkout-item-small">
+                        <div class="checkout-item-thumb">
                             {% if item.product.image %}
-                            <img src="{{ item.product.image.url }}"
-                                style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                            <img src="{{ item.product.image.url }}">
                             {% else %}
                             <i class="fas fa-box" style="color: #cbd5e1;"></i>
                             {% endif %}
@@ -208,19 +192,6 @@
     </form>
     {% endif %}
 </div>
-
-<style>
-    .address-card input:checked+.address-content,
-    .payment-card input:checked+.payment-content {
-        border-color: var(--primary) !important;
-        background: rgba(99, 102, 241, 0.05) !important;
-    }
-
-    .address-card input:checked+.address-content .check-icon,
-    .payment-card input:checked+.payment-content .check-icon {
-        opacity: 1 !important;
-    }
-</style>
 
 <script>
     document.querySelectorAll('input[name="address_id"]').forEach(radio => {

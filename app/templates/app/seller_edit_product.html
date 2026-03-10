@@ -102,6 +102,17 @@
 {% endif %}
 </div>
 <div class="fg">
+<label>Gender (Who is this for?)</label>
+{{ form.gender }}
+{% if form.gender.errors %}
+<ul class="errs">
+{% for e in form.gender.errors %}
+<li>{{ e }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+</div>
+<div class="fg">
 <label>Available Sizes</label>
 {{ form.size }}
 {% if form.size.errors %}
@@ -113,21 +124,29 @@
 {% endif %}
 </div>
 <div class="fg">
-<label>Product Image</label>
-{% if product.image %}
-<div class="img-preview">
-<img src="{{ product.image.url }}" alt="{{ product.name }}">
-<div class="img-label">Current image &mdash; upload a new one to replace</div>
-</div>
-{% endif %}
-{{ form.image }}
-{% if form.image.errors %}
-<ul class="errs">
-{% for e in form.image.errors %}
-<li>{{ e }}</li>
-{% endfor %}
-</ul>
-{% endif %}
+    <label>Product Images (Min 1, Max 6)</label>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
+        {% if product.image %}
+        <div class="img-preview" style="position: relative;">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            <span style="position: absolute; bottom: 5px; left: 5px; background: rgba(0,0,0,0.6); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px;">Cover</span>
+        </div>
+        {% endif %}
+        {% for extra in product.images.all %}
+        <div class="img-preview">
+            <img src="{{ extra.image.url }}" alt="{{ product.name }}">
+        </div>
+        {% endfor %}
+    </div>
+    <div class="img-label">Upload 1-6 images. New uploads will replace all current photos.</div>
+    {{ form.image }}
+    {% if form.image.errors %}
+    <ul class="errs">
+        {% for e in form.image.errors %}
+        <li>{{ e }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 </div>
 <div class="form-actions">
 <a href="{% url 'seller_dashboard' %}" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back</a>

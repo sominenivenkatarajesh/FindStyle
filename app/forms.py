@@ -28,7 +28,10 @@ class UserRegistrationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=commit)
         if commit:
-            profile, created = Profile.objects.get_or_create(user=user)
+            profile, created = Profile.objects.get_or_create(
+                username=user.username,
+                defaults={'email': user.email}
+            )
             role = self.cleaned_data.get('role')
             if role:
                 profile.role = role
@@ -58,6 +61,13 @@ class CustomPasswordResetForm(forms.Form):
 
     def get_user(self):
         return getattr(self, 'user_cache', None)
+
+
+class MultipleFileInput(forms.FileInput):
+    allow_multiple_selected = True
+
+    def __init__(self, attrs=None):
+        super().__init__(attrs)
 
 class ProductForm(forms.ModelForm):
     category = forms.ModelChoiceField(
@@ -118,9 +128,10 @@ class ProductForm(forms.ModelForm):
                 'placeholder': 'Available Sizes (e.g., XS, S, M, L, XL or enter custom sizes separated by commas)',
                 'style': 'background: var(--bg-surface); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; color: white; margin-bottom: 20px;'
             }),
-            'image': forms.FileInput(attrs={
+            'image': MultipleFileInput(attrs={
                 'class': 'form-input',
                 'accept': 'image/*',
+                'multiple': True,
                 'style': 'background: var(--bg-surface); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; color: white; margin-bottom: 20px;'
             }),
         }
@@ -129,22 +140,38 @@ class ProductForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         from .models import Category
         self.fields['category'].queryset = Category.objects.all()
+        # image is required for new products
+        if not self.instance.pk:
+            self.fields['image'].required = True
+        else:
+            self.fields['image'].required = False
 
     def clean(self):
         cleaned_data = super().clean()
         category = cleaned_data.get('category')
         new_category = cleaned_data.get('new_category', '').strip()
         existing_category = getattr(getattr(self, 'instance', None), 'category', None)
+        
+        # Image validation
+        images = self.files.getlist('image')
+        
+        if self.instance.pk:
+            # For existing product, check if it has at least one image (current or new)
+            has_existing = bool(self.instance.image) or self.instance.images.exists()
+            if not has_existing and not images:
+                raise forms.ValidationError("At least one product image is required.")
+        else:
+            # For new product, must upload at least one
+            if not images:
+                raise forms.ValidationError("At least one product image is required.")
+        
+        if images and len(images) > 6:
+            raise forms.ValidationError("You can upload a maximum of 6 images.")
+
         if not category and not new_category and not existing_category:
             raise forms.ValidationError(
                 "Please either select an existing category or enter a new category name."
             )
-        if new_category:
-            from .models import Category
-            if Category.objects.filter(name__iexact=new_category).exists():
-                raise forms.ValidationError(
-                    f"Category '{new_category}' already exists. Please select it from the list."
-                )
         return cleaned_data
 
 class DeliveryAreaForm(forms.ModelForm):

@@ -1,300 +1,6 @@
 {% extends 'app/base.html' %}
 {% block title %}My Orders | findStyle{% endblock %}
 {% block content %}
-<style>
-    .page-head {
-        margin-bottom: 36px;
-    }
-
-    .page-head h1 {
-        font-size: 2.4rem;
-        font-weight: 900;
-        background: linear-gradient(90deg, #fff, #94a3b8);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin: 0 0 6px;
-    }
-
-    .page-head p {
-        color: #94a3b8;
-        margin: 0;
-        font-size: 0.95rem;
-    }
-
-    .ocard {
-        background: rgba(255, 255, 255, 0.025);
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 20px;
-        margin-bottom: 28px;
-        overflow: hidden;
-    }
-
-    .ocard-head {
-        background: rgba(255, 255, 255, 0.03);
-        padding: 18px 24px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .ocard-meta {
-        display: flex;
-        gap: 36px;
-        flex-wrap: wrap;
-    }
-
-    .ometa-item span:first-child {
-        color: #94a3b8;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        display: block;
-        margin-bottom: 3px;
-    }
-
-    .ometa-item span:last-child {
-        font-weight: 700;
-        font-size: 0.95rem;
-        color: #fff;
-    }
-
-    .ometa-price {
-        color: #a78bfa !important;
-    }
-
-    .order-num {
-        text-align: right;
-    }
-
-    .order-num span:first-child {
-        color: #94a3b8;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        display: block;
-    }
-
-    .order-num span:last-child {
-        font-weight: 700;
-        font-size: 0.95rem;
-        color: #fff;
-    }
-
-    .status-tracker {
-        padding: 20px 24px 10px;
-        display: flex;
-        align-items: center;
-        gap: 0;
-        overflow-x: auto;
-    }
-
-    .st-step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex: 1;
-        min-width: 70px;
-    }
-
-    .st-dot {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        background: rgba(255, 255, 255, 0.04);
-        color: #64748b;
-        margin-bottom: 6px;
-        transition: all 0.3s;
-    }
-
-    .st-dot.done {
-        background: linear-gradient(135deg, #a78bfa, #7c3aed);
-        border-color: transparent;
-        color: #fff;
-    }
-
-    .st-dot.cancel {
-        background: rgba(239, 68, 68, 0.2);
-        border-color: #ef4444;
-        color: #ef4444;
-    }
-
-    .st-label {
-        font-size: 0.68rem;
-        color: #64748b;
-        text-align: center;
-        white-space: nowrap;
-    }
-
-    .st-label.done {
-        color: #a78bfa;
-    }
-
-    .st-label.cancel {
-        color: #ef4444;
-    }
-
-    .st-line {
-        flex: 1;
-        height: 2px;
-        background: rgba(255, 255, 255, 0.06);
-        min-width: 20px;
-        margin-bottom: 20px;
-    }
-
-    .st-line.done {
-        background: linear-gradient(90deg, #a78bfa, #7c3aed);
-    }
-
-    .ocard-body {
-        padding: 20px 24px;
-    }
-
-    .oitem {
-        display: flex;
-        gap: 20px;
-        padding: 16px;
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        margin-bottom: 14px;
-    }
-
-    .oitem-img {
-        width: 88px;
-        height: 88px;
-        border-radius: 10px;
-        background: #111;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        overflow: hidden;
-    }
-
-    .oitem-img img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .oitem-info {
-        flex: 1;
-    }
-
-    .oitem-name {
-        font-weight: 700;
-        font-size: 1rem;
-        color: #fff;
-        margin: 0 0 4px;
-    }
-
-    .oitem-meta {
-        color: #94a3b8;
-        font-size: 0.85rem;
-        margin: 0 0 10px;
-    }
-
-    .oitem-price {
-        font-weight: 800;
-        color: #a78bfa;
-        font-size: 1rem;
-    }
-
-    .review-box {
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
-        padding: 14px;
-        margin-top: 12px;
-    }
-
-    .review-box h5 {
-        margin: 0 0 10px;
-        font-size: 0.9rem;
-        color: #e2e8f0;
-    }
-
-    .star-pick {
-        display: flex;
-        flex-direction: row-reverse;
-        gap: 4px;
-        justify-content: flex-end;
-    }
-
-    .star-pick input {
-        display: none;
-    }
-
-    .star-pick label {
-        font-size: 1.4rem;
-        color: #4b5563;
-        cursor: pointer;
-        transition: color 0.2s;
-    }
-
-    .star-pick label:hover,
-    .star-pick label:hover~label,
-    .star-pick input:checked~label {
-        color: #fbbf24;
-    }
-
-    .reviewed-box {
-        background: rgba(16, 185, 129, 0.08);
-        border: 1px solid rgba(16, 185, 129, 0.25);
-        border-radius: 10px;
-        padding: 12px;
-        margin-top: 10px;
-    }
-
-    .ocard-foot {
-        background: rgba(255, 255, 255, 0.015);
-        padding: 14px 24px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 12px;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .ocard-actions {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-left: auto;
-    }
-
-    .empty-orders {
-        text-align: center;
-        padding: 80px 20px;
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 20px;
-        border: 1px dashed rgba(255, 255, 255, 0.08);
-    }
-
-    @media(max-width:600px) {
-        .ocard-meta {
-            gap: 14px;
-        }
-
-        .oitem {
-            flex-direction: column;
-        }
-
-        .oitem-img {
-            width: 60px;
-            height: 60px;
-        }
-    }
-</style>
 
 <div class="glass-panel">
     <div class="page-head">
@@ -320,8 +26,13 @@
                     </div>
                     <div class="ometa-item">
                         <span>Ship To</span>
-                        <span>{% if order.shipping_address %}{{ order.shipping_address.full_name }}{% else %}{{
-                            order.user.username }}{% endif %}</span>
+                        <span>
+                            {% if order.shipping_address %}
+                            {{ order.shipping_address.full_name }}
+                            {% else %}
+                            {{ order.username }}
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
                 <div class="order-num">
@@ -396,34 +107,50 @@
                     <div class="oitem-info">
                         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
                             <div>
-                                <p class="oitem-name">{% if item.product %}{{ item.product.name }}{% else %}Product
-                                    Unavailable{% endif %}</p>
-                                <p class="oitem-meta">Qty: {{ item.quantity }}{% if item.selected_size %} &nbsp;|&nbsp;
-                                    Size: <strong>{{ item.selected_size|upper }}</strong>{% endif %}</p>
+                                <p class="oitem-name">
+                                    {% if item.product %}
+                                    {{ item.product.name }}
+                                    {% else %}
+                                    Product Unavailable
+                                    {% endif %}
+                                </p>
+                                <p class="oitem-meta">
+                                    Qty: {{ item.quantity }}
+                                    {% if item.selected_size %}
+                                    &nbsp;|&nbsp; Size: <strong>{{ item.selected_size|upper }}</strong>
+                                    {% endif %}
+                                </p>
                             </div>
                             <div class="oitem-price">&#8377;{{ item.price|floatformat:0 }}</div>
                         </div>
 
                         {% if order.status == 'Delivered' and not item.review and item.product %}
                         <div class="review-box">
-                            <h5><i class="fa-solid fa-star" style="color:#fbbf24;margin-right:6px;"></i>Share your
-                                feedback</h5>
-                            <form action="{% url 'add_review' item.product.id %}" method="POST">
+                            <h5><i class="fa-solid fa-star" style="color:#fbbf24;margin-right:6px;"></i>Rate & Review
+                                Product</h5>
+                            <form action="{% url 'add_review' item.product.id %}" method="POST" id="form-{{ item.id }}"
+                                class="review-form">
                                 {% csrf_token %}
                                 <input type="hidden" name="order_item_id" value="{{ item.id }}">
-                                <div class="star-pick">
-                                    {% for i in "54321" %}
-                                    <input type="radio" name="rating" value="{{ i }}" id="r-{{ i }}-{{ item.id }}"
-                                        required>
-                                    <label for="r-{{ i }}-{{ item.id }}"><i class="fa-solid fa-star"></i></label>
-                                    {% endfor %}
+                                <div class="star-rating-wrapper">
+                                    <div class="star-pick">
+                                        {% for i in "54321" %}
+                                        <input type="radio" name="rating" value="{{ i }}" id="r-{{ i }}-{{ item.id }}"
+                                            required>
+                                        <label for="r-{{ i }}-{{ item.id }}" title="{{ i }} stars">
+                                            <i class="fa-solid fa-star"></i>
+                                        </label>
+                                        {% endfor %}
+                                    </div>
+                                    <span class="rating-label">Select your rating</span>
                                 </div>
-                                <textarea name="comment" placeholder="What did you think about this product?"
-                                    style="width:100%;padding:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;font-size:0.85rem;outline:none;resize:none;height:64px;box-sizing:border-box;"
-                                    required></textarea>
-                                <button type="submit" class="btn btn-primary"
-                                    style="width:auto;margin:10px 0 0;padding:8px 20px;font-size:0.82rem;">Submit
-                                    Review</button>
+                                <textarea name="comment"
+                                    placeholder="How was your experience with this product? Mention quality, fit, etc."
+                                    class="review-textarea" required></textarea>
+                                <button type="submit" class="btn-submit-review">
+                                    <span>Submit Review</span>
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
                             </form>
                         </div>
                         {% elif order.status == 'Delivered' and item.review %}
