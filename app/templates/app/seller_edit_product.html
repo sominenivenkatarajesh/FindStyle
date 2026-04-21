@@ -1,33 +1,12 @@
 {% extends 'app/base.html' %}
 {% block title %}Edit Product | findStyle{% endblock %}
 {% block content %}
-<style>
-.edit-wrap{max-width:700px;margin:0 auto;padding:20px 0 60px;}
-.edit-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:40px;}
-.edit-title{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#a78bfa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}
-.edit-sub{color:var(--text-muted);font-size:0.9rem;margin-bottom:32px;}
-.fg{margin-bottom:22px;}
-.fg label{display:block;font-size:0.85rem;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px;}
-.fg input,.fg textarea,.fg select{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:14px 16px;border-radius:12px;color:#fff;font-family:inherit;font-size:0.95rem;transition:border-color 0.2s;box-sizing:border-box;}
-.fg input:focus,.fg textarea:focus,.fg select:focus{outline:none;border-color:#a78bfa;box-shadow:0 0 0 3px rgba(167,139,250,0.15);}
-.fg textarea{resize:vertical;min-height:120px;}
-.fg select option{background:#1e1e2e;}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.img-preview img{width:100px;height:100px;object-fit:cover;border-radius:12px;border:1px solid rgba(255,255,255,0.1);}
-.img-label{font-size:0.78rem;color:var(--text-muted);margin-top:6px;}
-.errs{list-style:none;padding:0;margin:6px 0 0;}
-.errs li{color:#f87171;font-size:0.82rem;}
-.form-err{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:#f87171;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:0.9rem;}
-.form-actions{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;}
-.btn-save{flex:1;padding:14px;border-radius:12px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;font-weight:700;font-size:1rem;border:none;cursor:pointer;font-family:inherit;transition:opacity 0.2s,transform 0.2s;}
-.btn-save:hover{opacity:0.9;transform:translateY(-1px);}
-.btn-back{flex:1;padding:14px;border-radius:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.75);font-weight:600;font-size:1rem;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s;}
-.btn-back:hover{background:rgba(255,255,255,0.1);color:#fff;}
-</style>
-<div class="edit-wrap">
-<div class="edit-card">
-<div class="edit-title"><i class="fa-solid fa-pen-to-square" style="margin-right:10px;"></i>Edit Product</div>
-<div class="edit-sub">Updating: <strong style="color:rgba(255,255,255,0.9);">{{ product.name }}</strong></div>
+{% block content %}
+<div class="main-container">
+<div class="cp-wrap">
+    <div class="cp-card">
+<div class="cp-title"><i class="fa-solid fa-pen-to-square mr-10"></i>Edit Product</div>
+<div class="cp-sub">Updating: <strong class="text-white">{{ product.name }}</strong></div>
 <form method="post" enctype="multipart/form-data" novalidate>
 {% csrf_token %}
 {% for error in form.non_field_errors %}
@@ -125,20 +104,20 @@
 </div>
 <div class="fg">
     <label>Product Images (Min 1, Max 6)</label>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
+    <div class="flex gap-10 flex-wrap mb-15">
         {% if product.image %}
-        <div class="img-preview" style="position: relative;">
+        <div class="img-preview-box relative">
             <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            <span style="position: absolute; bottom: 5px; left: 5px; background: rgba(0,0,0,0.6); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px;">Cover</span>
+            <span class="absolute text-tiny bg-black-o60 text-white px-5 py-2 radius-sm" style="bottom:5px; left:5px;">Cover</span>
         </div>
         {% endif %}
         {% for extra in product.images.all %}
-        <div class="img-preview">
+        <div class="img-preview-box">
             <img src="{{ extra.image.url }}" alt="{{ product.name }}">
         </div>
         {% endfor %}
     </div>
-    <div class="img-label">Upload 1-6 images. New uploads will replace all current photos.</div>
+    <div class="field-hint mb-10">Upload 1-6 images. New uploads will replace all current photos.</div>
     {{ form.image }}
     {% if form.image.errors %}
     <ul class="errs">
@@ -148,9 +127,9 @@
     </ul>
     {% endif %}
 </div>
-<div class="form-actions">
-<a href="{% url 'seller_dashboard' %}" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back</a>
-<button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+<div class="cp-actions">
+<a href="{% url 'seller_dashboard' %}" class="btn-cancel"><i class="fa-solid fa-arrow-left"></i> Back</a>
+<button type="submit" class="btn-publish"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
 </div>
 </form>
 </div>

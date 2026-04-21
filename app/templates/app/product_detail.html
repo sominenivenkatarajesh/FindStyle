@@ -6,7 +6,7 @@
 {% with cat_name=product.category.name|default:'Fashion' %}
 {% with rev_count=product.reviews.count %}
 <div class="product-detail-container">
-    <div class="glass-panel" style="padding:0; overflow:hidden;">
+    <div class="glass-panel no-padding overflow-hidden">
         <div class="pd-grid">
             <!-- Left: Image Gallery -->
             <div class="pd-images">
@@ -20,10 +20,10 @@
                     {% endif %}
                 </div>
                 {% if product.images.exists %}
-                <div class="pd-thumbnails" style="display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding-bottom: 5px;">
-                    <img src="{{ product.image.url }}" class="pd-thumb active" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid #a78bfa;" onclick="changeMainImage(this.src, this)">
+                <div class="pd-thumbnails flex gap-10 mt-15 overflow-x-auto pb-5">
+                    <img src="{{ product.image.url }}" class="pd-thumb active" onclick="changeMainImage(this.src, this)">
                     {% for img in product.images.all %}
-                    <img src="{{ img.image.url }}" class="pd-thumb" style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent;" onclick="changeMainImage(this.src, this)">
+                    <img src="{{ img.image.url }}" class="pd-thumb" onclick="changeMainImage(this.src, this)">
                     {% endfor %}
                 </div>
                 {% endif %}
@@ -129,7 +129,7 @@
                     <div class="pd-actions">
                         {% if request.GET.flow == 'buy' %}
                             <!-- Buy Now Flow: size → checkout directly -->
-                            <button type="submit" formaction="{% url 'buy_now' product.id %}" class="btn-buy" style="flex:1;" onclick="return checkSizeBuyNow(event)">
+                            <button type="submit" formaction="{% url 'buy_now' product.id %}" class="btn-buy flex-1" onclick="return checkSizeBuyNow(event)">
                                 <i class="fa-solid fa-bolt"></i> Buy Now — Proceed to Checkout
                             </button>
                             <button type="button"
@@ -139,7 +139,7 @@
                             </button>
                         {% elif request.GET.flow == 'bag' %}
                             <!-- Add to Bag Flow: size → cart → checkout -->
-                            <button type="submit" class="btn-bag" style="flex:1;">
+                            <button type="submit" class="btn-bag flex-1">
                                 <i class="fa-solid fa-bag-shopping"></i> Add to Bag — View Cart
                             </button>
                             <button type="button"

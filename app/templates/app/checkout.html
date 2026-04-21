@@ -1,31 +1,27 @@
-﻿{% extends 'app/base.html' %}
+{% extends 'app/base.html' %}
 
 {% block title %}Checkout - findStyle{% endblock %}
 
 {% block content %}
 <div class="main-container">
     {% if success %}
-    <div class="glass-panel" style="text-align: center; padding: 80px 40px;">
-        <div class="success-icon-box">
-            <i class="fa-solid fa-circle-check"></i>
+    <div class="glass-panel text-center" style="padding: 80px 40px;">
+        <div class="success-icon-box flex-center mb-30" style="width: 100px; height: 100px; background: rgba(var(--success-rgb), 0.1); border-radius: 50%; margin: 0 auto;">
+            <i class="fa-solid fa-circle-check text-success" style="font-size: 4rem;"></i>
         </div>
-        <h1 style="font-size: 2.5rem; margin-bottom: 15px;">Order Placed Successfully!</h1>
-        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px;">Thank you for your purchase. Your
-            order #{{ order.id }} has been confirmed.</p>
+        <h1 class="text-large font-black mb-15">Order Placed Successfully!</h1>
+        <p class="text-muted text-small mb-40">Thank you for your purchase. Your order #{{ order.id }} has been confirmed.</p>
 
-        <div style="display: flex; gap: 20px; justify-content: center;">
-            <a href="{% url 'orders' %}" class="btn btn-primary" style="width: auto; padding: 12px 40px;">View My
-                Orders</a>
-            <a href="{% url 'product_list' %}" class="btn btn-outline" style="width: auto; padding: 12px 40px;">Continue
-                Shopping</a>
+        <div class="flex-center gap-20">
+            <a href="{% url 'orders' %}" class="btn btn-primary" style="width: auto; padding: 12px 40px;">View My Orders</a>
+            <a href="{% url 'product_list' %}" class="btn btn-outline" style="width: auto; padding: 12px 40px;">Continue Shopping</a>
         </div>
     </div>
     {% else %}
     <form method="post" id="checkout-form" class="checkout-grid">
         {% csrf_token %}
         <div class="glass-panel">
-            <h2 style="margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;">
-                Checkout</h2>
+            <h2 class="mb-30 border-bottom pb-15 font-black text-large"><i class="fa-solid fa-cart-shopping text-primary mr-10"></i>Checkout</h2>
 
             {% if messages %}
             <div style="margin-bottom: 20px;">
@@ -37,8 +33,8 @@
             </div>
             {% endif %}
 
-            <div style="margin-bottom: 40px;">
-                <h3 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 15px;">
+            <div class="mb-40">
+                <h3 class="text-small text-primary mb-15 text-uppercase">
                     <i class="fa-solid fa-location-dot"></i> Shipping Address
                 </h3>
 
@@ -53,21 +49,15 @@
                         <input type="radio" name="address_id" value="{{ address.id }}">
                         {% endif %}
                         <div class="address-content">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                <div style="flex: 1;">
-                                    <p style="font-weight: 600; margin-bottom: 5px;">{{ address.full_name }}</p>
-                                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                                        {{ address.address_line_1 }}
-                                    </p>
+                            <div class="flex-between align-start h-100">
+                                <div class="flex-1">
+                                    <p class="font-bold mb-10">{{ address.full_name }}</p>
+                                    <p class="text-muted text-small">{{ address.address_line_1 }}</p>
                                     {% if address.address_line_2 %}
-                                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                                        {{ address.address_line_2 }}
-                                    </p>
+                                    <p class="text-muted text-small">{{ address.address_line_2 }}</p>
                                     {% endif %}
-                                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                                        {{ address.city }}, {{ address.state }} - {{ address.pincode }}
-                                    </p>
-                                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                                    <p class="text-muted text-small">{{ address.city }}, {{ address.state }} - {{ address.pincode }}</p>
+                                    <p class="text-muted text-small mt-10">
                                         <i class="fa-solid fa-phone" style="font-size: 0.8rem;"></i> {{ address.phone_number }}
                                     </p>
                                 </div>
@@ -89,16 +79,14 @@
                         {% else %}
                         <input type="radio" name="address_id" value="new">
                         {% endif %}
-                        <div class="address-content">
-                            <p style="margin: 0; display: flex; align-items: center; gap: 10px;">
-                                <i class="fa-solid fa-plus-circle"></i> Add a new address
-                            </p>
+                        <div class="address-content flex-center flex-column gap-10">
+                            <i class="fa-solid fa-plus-circle text-large text-primary opacity-50"></i>
+                            <span class="font-bold text-small">Add a new address</span>
                         </div>
                     </label>
                 </div>
 
-                <div id="new-address-form" class="new-address-panel"
-                    style="display: {% if not addresses or request.POST.address_id == 'new' %}block{% else %}none{% endif %};">
+                <div id="new-address-form" class="new-address-panel {% if addresses and request.POST.address_id != 'new' %}hidden{% endif %}">
                     <h4 style="margin-top: 0; margin-bottom: 20px;">Shipping Details</h4>
                     <div class="form-grid-2">
                         <input type="text" name="full_name" placeholder="Full Name"
@@ -121,19 +109,22 @@
                 </div>
             </div>
 
-            <div>
-                <h3 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 20px;">
+            <div class="mt-40">
+                <h3 class="text-small text-primary mb-20 text-uppercase font-bold letter-spacing-1">
                     <i class="fa-solid fa-credit-card"></i> Payment Method
                 </h3>
-                <div style="display: grid; gap: 15px;">
+                <div class="address-selection">
                     {% for value, label in payment_methods %}
                     <label class="payment-card">
                         <input type="radio" name="payment_method" value="{{ value }}" {{ forloop.first|yesno:"checked," }}>
-                        <div class="payment-content">
+                        <div class="payment-content flex-between align-center">
+                            <div class="flex align-center gap-15">
+                                <i class="fa-solid fa-shield-halved text-primary opacity-50"></i>
+                                <span class="font-bold">{{ label }}</span>
+                            </div>
                             <div class="check-icon">
                                 <i class="fa-solid fa-circle-check"></i>
                             </div>
-                            <span style="font-weight: 600;">{{ label }}</span>
                         </div>
                     </label>
                     {% endfor %}
@@ -146,47 +137,38 @@
                 <h3 style="margin-top: 0; font-size: 1.4rem; margin-bottom: 25px;">Order Summary</h3>
                 <div class="checkout-items-mini">
                     {% for item in cart.cartitem_set.all %}
-                    <div class="checkout-item-small">
+                    <div class="checkout-item-small flex align-center gap-15 mb-15">
                         <div class="checkout-item-thumb">
                             {% if item.product.image %}
                             <img src="{{ item.product.image.url }}">
                             {% else %}
-                            <i class="fas fa-box" style="color: #cbd5e1;"></i>
+                            <i class="fas fa-box text-muted"></i>
                             {% endif %}
                         </div>
-                        <div style="flex-grow: 1; min-width: 0;">
-                            <p
-                                style="margin: 0; font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                {{ item.product.name }}
-                            </p>
-                            <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">
-                                Qty: {{ item.quantity }} &times; &#8377;{{ item.product.price|floatformat:0 }}
-                            </p>
+                        <div class="flex-1 overflow-hidden">
+                            <p class="font-bold text-small m-0 text-truncate">{{ item.product.name }}</p>
+                            <p class="text-muted text-small m-0">Qty: {{ item.quantity }} &times; &#8377;{{ item.product.price|floatformat:0 }}</p>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
 
-                <div style="margin: 25px 0; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span style="color: var(--text-muted); font-size: 0.9rem;">Subtotal</span>
-                        <span style="font-weight: 600;">&#8377;{{ cart.total_price|floatformat:0 }}</span>
+                <div class="mb-20 border-top pt-20">
+                    <div class="flex-between mb-10">
+                        <span class="text-muted text-small">Subtotal</span>
+                        <span class="font-bold">&#8377;{{ cart.total_price|floatformat:0 }}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                        <span style="color: var(--text-muted); font-size: 0.9rem;">Shipping</span>
-                        <span style="color: var(--success);">FREE</span>
+                    <div class="flex-between mb-15">
+                        <span class="text-muted text-small">Shipping</span>
+                        <span class="text-success">FREE</span>
                     </div>
-                    <div
-                        style="display: flex; justify-content: space-between; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                        <span style="font-size: 1.3rem; font-weight: 800;">Total</span>
-                        <span style="font-size: 1.3rem; font-weight: 800; color: var(--primary);">
-                            &#8377;{{ cart.total_price|floatformat:0 }}
-                        </span>
+                    <div class="flex-between pt-15 border-top">
+                        <span class="text-large font-black">Total</span>
+                        <span class="text-large font-black text-primary">&#8377;{{ cart.total_price|floatformat:0 }}</span>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary"
-                    style="padding: 15px; font-size: 1.1rem; border-radius: 15px;">Complete Purchase</button>
+                <button type="submit" class="btn btn-primary btn-large">Complete Purchase</button>
             </div>
         </div>
     </form>

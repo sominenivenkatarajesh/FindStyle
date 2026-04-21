@@ -4,13 +4,10 @@
 
 <div class="dash-header">
     <div>
-        <div class="dash-title"><i class="fa-solid fa-store" style="margin-right:10px;font-size:1.6rem;"></i>Seller
-            Dashboard</div>
-        <div class="dash-subtitle">Welcome back, <strong style="color:#fff;">{{ request.user.username }}</strong>
-            &mdash; manage your store</div>
+        <div class="dash-title"><i class="fa-solid fa-store mr-10"></i>Seller Dashboard</div>
+        <div class="dash-subtitle text-muted">Welcome back, <strong class="text-white">{{ request.user.username }}</strong> &mdash; manage your store</div>
     </div>
-    <a href="{% url 'seller_create_product' %}" class="btn btn-primary" style="width: auto; margin-bottom: 0;"><i
-            class="fa-solid fa-plus"></i> Add New Product</a>
+    <a href="{% url 'seller_create_product' %}" class="btn btn-primary btn-large" style="width: auto;"><i class="fa-solid fa-plus"></i> Add New Product</a>
 </div>
 
 <div class="stats-grid">
@@ -53,11 +50,8 @@
 
 <div class="section-card">
     <div class="section-header">
-        <h3 class="section-title" style="font-size: 1.1rem; margin-bottom: 0;"><i class="fa-solid fa-boxes-stacked"></i>
-            My Products</h3>
-        <a href="{% url 'seller_create_product' %}" class="btn btn-outline"
-            style="width: auto; padding: 10px 20px; font-size: 0.85rem; margin-bottom: 0;"><i
-                class="fa-solid fa-plus"></i> Add Product</a>
+        <h3 class="section-title m-0 text-small text-uppercase"><i class="fa-solid fa-boxes-stacked mr-10"></i> My Products</h3>
+        <a href="{% url 'seller_create_product' %}" class="btn btn-outline" style="width: auto;"><i class="fa-solid fa-plus mr-5"></i> Add Product</a>
     </div>
     {% if products %}
     <div style="overflow-x:auto;">
@@ -76,46 +70,40 @@
                 {% for p in products %}
                 <tr>
                     <td>
-                        <div style="display:flex;align-items:center;gap:14px;">
+                        <div class="flex align-center gap-15">
                             {% if p.image %}
                             <img src="{{ p.image.url }}" alt="{{ p.name }}" class="product-thumb">
                             {% else %}
                             <div class="no-img-thumb"><i class="fa-solid fa-image"></i></div>
                             {% endif %}
                             <div>
-                                <div style="font-weight:600;">{{ p.name }}</div>
-                                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">PK: #{{ p.id }}
-                                </div>
+                                <div class="font-bold">{{ p.name }}</div>
+                                <div class="text-small text-muted mt-2">PK: #{{ p.id }}</div>
                             </div>
                         </div>
                     </td>
                     <td>
                         {% if p.category %}
-                        <span style="color:var(--secondary);">{{ p.category.name }}</span>
+                        <span class="text-secondary">{{ p.category.name }}</span>
                         {% else %}
-                        <span style="color:var(--text-muted);">&#8212;</span>
+                        <span class="text-muted">&#8212;</span>
                         {% endif %}
                     </td>
-                    <td><strong style="color:var(--success);">&#8377;{{ p.price }}</strong></td>
+                    <td><strong class="text-success">&#8377;{{ p.price }}</strong></td>
                     <td>
                         {% if p.stock_count > 5 %}
-                        <span style="color:var(--success);">{{ p.stock_count }}</span>
+                        <span class="text-success">{{ p.stock_count }}</span>
                         {% elif p.stock_count > 0 %}
-                        <span style="color:var(--warning);">{{ p.stock_count }} Low</span>
+                        <span class="text-warning">{{ p.stock_count }} Low</span>
                         {% else %}
-                        <span style="color:var(--error);">Out of Stock</span>
+                        <span class="text-error font-bold">Out of Stock</span>
                         {% endif %}
                     </td>
                     <td>{{ p.total_sales }}</td>
                     <td>
-                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <a href="{% url 'seller_edit_product' p.id %}" class="btn btn-outline"
-                                style="padding: 8px 14px; font-size: 0.8rem; margin-bottom: 0;"><i
-                                    class="fa-solid fa-pen"></i></a>
-                            <button type="button" class="btn btn-outline"
-                                style="padding: 8px 14px; font-size: 0.8rem; border-color: var(--error); color: var(--error); margin-bottom: 0;"
-                                onclick="openDeleteModal('{{ p.id }}','{{ p.name|escapejs }}')"><i
-                                    class="fa-solid fa-trash"></i></button>
+                        <div class="flex gap-10">
+                            <a href="{% url 'seller_edit_product' p.id %}" class="btn btn-outline" style="padding: 10px 15px; width: auto; margin-bottom: 0;"><i class="fa-solid fa-pen"></i></a>
+                            <button type="button" class="btn btn-outline text-error" style="padding: 10px 15px; width: auto; margin-bottom: 0; border-color: var(--error);" onclick="openDeleteModal('{{ p.id }}','{{ p.name|escapejs }}')"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </td>
                 </tr>
@@ -127,9 +115,8 @@
     <div class="empty-state">
         <i class="fa-solid fa-box-open"></i>
         <p>You haven't added any products yet.</p>
-        <a href="{% url 'seller_create_product' %}" class="btn btn-primary"
-            style="display:inline-flex; align-items:center; gap:12px; margin-top:15px; width:auto; padding: 16px 32px; border-radius: 16px; font-size: 1.1rem; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);">
-            <i class="fa-solid fa-plus" style="font-size: 1.2rem; opacity: 1;"></i>
+        <a href="{% url 'seller_create_product' %}" class="btn btn-primary btn-large glow-primary" style="width:auto;">
+            <i class="fa-solid fa-plus mr-10"></i>
             Add Your First Product
         </a>
     </div>
@@ -138,12 +125,11 @@
 
 <div class="section-card">
     <div class="section-header">
-        <h3 class="section-title" style="font-size: 1.1rem; margin-bottom: 0;"><i class="fa-solid fa-receipt"></i>
-            Orders for My Products</h3>
-        <div style="display:flex;gap:12px;font-size:0.82rem;color:var(--text-muted);">
-            <span><span style="color:var(--warning);">&#9679;</span> Pending: {{ pending_count }}</span>
-            <span><span style="color:var(--success);">&#9679;</span> Delivered: {{ delivered_count }}</span>
-            <span><span style="color:var(--error);">&#9679;</span> Cancelled: {{ cancelled_count }}</span>
+        <h3 class="section-title m-0 text-small text-uppercase"><i class="fa-solid fa-receipt mr-10"></i> Orders for My Products</h3>
+        <div class="flex gap-15 text-small text-muted">
+            <span><span class="text-warning mr-5">&#9679;</span> Pending: {{ pending_count }}</span>
+            <span><span class="text-success mr-5">&#9679;</span> Delivered: {{ delivered_count }}</span>
+            <span><span class="text-error mr-5">&#9679;</span> Cancelled: {{ cancelled_count }}</span>
         </div>
     </div>
     {% if vendor_orders %}

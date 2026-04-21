@@ -4,10 +4,8 @@
 
 <div class="glass-panel">
     <div class="page-head">
-        <h1><i class="fa-solid fa-box"
-                style="margin-right:12px;font-size:2rem;background:linear-gradient(135deg,#a78bfa,#ec4899);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;"></i>My
-            Orders</h1>
-        <p>Track, return or reorder your fashion purchases</p>
+        <h1><i class="fa-solid fa-box text-secondary mr-10" style="font-size:2rem;"></i>My Orders</h1>
+        <p class="text-muted">Track, return or reorder your fashion purchases</p>
     </div>
 
     {% if orders %}
@@ -101,7 +99,9 @@
                         {% if item.product and item.product.image %}
                         <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
                         {% else %}
-                        <i class="fa-solid fa-shirt" style="font-size:2rem;color:rgba(255,255,255,0.1);"></i>
+                        <div class="flex-center h-100 opacity-10">
+                            <i class="fa-solid fa-shirt text-large"></i>
+                        </div>
                         {% endif %}
                     </div>
                     <div class="oitem-info">
@@ -170,10 +170,11 @@
                         {% endif %}
 
                         {% if item.product %}
-                        <div style="margin-top:12px;">
+                        <div class="mt-15">
                             <a href="{% url 'product_detail' item.product.id %}" class="btn btn-primary"
-                                style="width:auto;margin:0;padding:7px 18px;font-size:0.8rem;display:inline-flex;align-items:center;gap:5px;"><i
-                                    class="fa-solid fa-repeat"></i> Buy Again</a>
+                                style="width:auto; padding:8px 20px; font-size:0.85rem; display:inline-flex; align-items:center; gap:8px;">
+                                <i class="fa-solid fa-repeat"></i> Buy Again
+                            </a>
                         </div>
                         {% endif %}
                     </div>
@@ -184,34 +185,38 @@
             <div class="ocard-foot">
                 <div class="ocard-actions">
                     {% if order.status == 'Delivered' %}
-                    <a href="{% url 'return_order' order.id %}" class="btn btn-outline"
-                        style="width:auto;margin:0;padding:8px 18px;font-size:0.82rem;border-color:var(--error);color:var(--error);display:inline-flex;align-items:center;gap:5px;"><i
-                            class="fa-solid fa-arrow-rotate-left"></i> Return</a>
+                    <a href="{% url 'return_order' order.id %}" class="btn btn-outline text-error"
+                        style="width:auto; padding:10px 24px; font-size:0.85rem; border-color:var(--error); display:inline-flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-arrow-rotate-left"></i> Return Product
+                    </a>
                     {% endif %}
                     {% if order.status == 'Pending' %}
-                    <a href="{% url 'cancel_order' order.id %}" class="btn btn-outline"
-                        style="width:auto;margin:0;padding:8px 18px;font-size:0.82rem;border-color:var(--error);color:var(--error);display:inline-flex;align-items:center;gap:5px;"
-                        onclick="return confirm('Cancel this order?')"><i class="fa-solid fa-xmark"></i> Cancel
-                        Order</a>
+                    <a href="{% url 'cancel_order' order.id %}" class="btn btn-outline text-error"
+                        style="width:auto; padding:10px 24px; font-size:0.85rem; border-color:var(--error); display:inline-flex; align-items:center; gap:8px;"
+                        onclick="return confirm('Cancel this order?')">
+                        <i class="fa-solid fa-xmark"></i> Cancel Order
+                    </a>
                     {% endif %}
-                    <span style="color:#94a3b8;font-size:0.82rem;padding:8px 0;">Arriving: <strong
-                            style="color:#fff;">{{ order.delivery_date|date:"d M Y" }}</strong></span>
+                    <div class="flex align-center gap-10 text-small">
+                        <span class="text-muted">Estimated Delivery:</span>
+                        <span class="font-bold text-white">{{ order.delivery_date|date:"d M Y" }}</span>
+                    </div>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
-    <div class="empty-orders">
-        <div
-            style="width:100px;height:100px;background:rgba(167,139,250,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;">
-            <i class="fa-solid fa-bag-shopping" style="font-size:2.8rem;color:#a78bfa;opacity:0.5;"></i>
+    <div class="empty-orders text-center">
+        <div class="flex-center mb-30"
+            style="width:110px;height:110px;background:rgba(var(--primary-rgb),0.1);border-radius:50%;margin:0 auto;">
+            <i class="fa-solid fa-bag-shopping text-primary" style="font-size:3rem;opacity:0.6;"></i>
         </div>
-        <h3 style="font-size:1.8rem;margin-bottom:10px;">No orders yet</h3>
-        <p style="color:#94a3b8;max-width:400px;margin:0 auto 30px;">You haven't placed any orders yet. Explore our
-            collection of shoes and dresses for the entire family!</p>
+        <h3 class="text-large font-black mb-10">No orders yet</h3>
+        <p class="text-muted text-small mb-40" style="max-width:440px;margin:0 auto;">You haven't placed any orders yet. Explore our
+            latest collection of fashion essentials for the entire family!</p>
         <a href="{% url 'product_list' %}" class="btn btn-primary"
-            style="width:auto;padding:12px 40px;border-radius:30px;display:inline-block;">Start Shopping</a>
+            style="width:auto;padding:14px 48px;border-radius:30px;font-weight:800;">START SHOPPING</a>
     </div>
     {% endif %}
 </div>

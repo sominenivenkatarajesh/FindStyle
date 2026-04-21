@@ -5,23 +5,19 @@
 
 <!-- Hero Banner -->
 <div class="hero">
-    <div class="hero-badge" style="position: relative; z-index: 2;"><i class="fa-solid fa-fire"></i> New Season Arrivals
-    </div>
-    <h1 style="position: relative; z-index: 2;">Fashion for Every Moment</h1>
-    <p style="position: relative; z-index: 2; margin-bottom: 30px;">Shoes, dresses & more for Men, Women & Kids — all in
-        one place.</p>
-    <div class="hero-btns" style="position: relative; z-index: 2;">
-        <a href="#products-section" class="hero-btn-primary"><i class="fa-solid fa-bag-shopping"></i> Explore
-            Collection</a>
+    <div class="hero-badge"><i class="fa-solid fa-fire"></i> New Season Arrivals</div>
+    <h1>Fashion for Every Moment</h1>
+    <p>Shoes, dresses & more for Men, Women & Kids — all in one place.</p>
+    <div class="hero-btns">
+        <a href="#products-section" class="hero-btn-primary"><i class="fa-solid fa-bag-shopping"></i> Explore Collection</a>
         <a href="{% url 'product_list' %}?q=new" class="hero-btn-outline">New Arrivals</a>
     </div>
 </div>
 
 <!-- ─── Level-1 Filter: GENDER / AUDIENCE ───────────────────────────────── -->
-<div style="margin-bottom:10px;">
-    <div
-        style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:12px;">
-        <i class="fa-solid fa-users-rectangle" style="margin-right:5px;"></i>
+<div class="mb-10">
+    <div class="section-title">
+        <i class="fa-solid fa-users-rectangle"></i> Shop By Audience
     </div>
     <div class="gender-tabs">
         <a href="{% url 'product_list' %}{% if query %}?q={{ query }}{% endif %}"
@@ -42,10 +38,9 @@
 
 <!-- ─── Level-2 Filter: PRODUCT CATEGORY (shows only when a gender is chosen) ─ -->
 {% if current_gender %}
-<div style="margin-bottom:36px;">
-    <div
-        style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:12px;">
-        <i class="fa-solid fa-tag" style="margin-right:5px;"></i>
+<div class="mb-40">
+    <div class="section-title">
+        <i class="fa-solid fa-tag"></i> Browse Categories
     </div>
     <div class="cat-filters">
         <a href="?gender={{ current_gender }}{% if query %}&q={{ query }}{% endif %}"
@@ -58,17 +53,13 @@
             <i class="fa-solid {{ cat.icon|default:'fa-tag' }}"></i> {{ cat.name }}
         </a>
         {% endfor %}
-        {% if not categories %}
-        <span style="color:#475569;font-size:0.85rem;padding:8px 14px;">No sub-categories yet — add products!</span>
-        {% endif %}
     </div>
 </div>
 {% else %}
 <!-- No gender selected: show a subtle prompt -->
-<div style="margin-bottom:36px;">
+<div class="mb-40">
     <div class="cat-filters">
-        <a href="{% url 'product_list' %}" class="cat-pill active"><i class="fa-solid fa-layer-group"></i> Recent
-            Arrivals</a>
+        <a href="{% url 'product_list' %}" class="cat-pill active"><i class="fa-solid fa-layer-group"></i> Recent Arrivals</a>
         {% for cat in categories %}
         <a href="?category={{ cat.id }}" class="cat-pill {% if current_category == cat.id %}active{% endif %}">
             <i class="fa-solid {{ cat.icon|default:'fa-tag' }}"></i> {{ cat.name }}
@@ -116,7 +107,7 @@
         </a>
         <div class="pcard-body">
             <div class="pcard-cat">{{ product.category.name|default:"Fashion" }}{% if product.gender != 'All' %}
-                &middot; <span style="color:#34d399;">{{ product.gender }}</span>{% endif %}</div>
+                &middot; <span class="text-success">{{ product.gender }}</span>{% endif %}</div>
             <div class="pcard-name">{{ product.name }}</div>
             <div class="pcard-stars">
                 {% for i in "12345" %}

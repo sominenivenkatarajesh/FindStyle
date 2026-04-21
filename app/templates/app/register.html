@@ -3,11 +3,12 @@
 
 {% block content %}
 
-<div class="register-wrapper">
-    <div class="register-card">
-
-        <h1>Join the Collective</h1>
-        <p class="subtitle">Create your free account and start shopping</p>
+<div class="auth-container glass-panel">
+    <div class="auth-header">
+        <i class="fa-solid fa-user-plus text-primary"></i>
+        <h1 class="font-black">Join the Collective</h1>
+        <p class="text-muted">Create your free account and start shopping</p>
+    </div>
 
         <form method="post" id="register-form" novalidate>
             {% csrf_token %}
@@ -22,9 +23,8 @@
 
             {% for field in form %}
             {% if field.name == "role" %}
-            <!-- Role field — custom card-style radio buttons -->
-            <div class="field-group">
-                <label><i class="fa-solid fa-user-tag"></i> Account Role</label>
+            <div class="form-group mb-20">
+                <label class="font-bold mb-8 block text-small"><i class="fa-solid fa-user-tag mr-5"></i> Account Role</label>
                 <div class="role-group">
                     {% for radio in field %}
                     <div class="role-option">
@@ -40,42 +40,39 @@
                     {% endfor %}
                 </div>
                 {% if field.errors %}
-                {% for error in field.errors %}
-                <p class="field-error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</p>
-                {% endfor %}
+                <p class="text-error text-small mt-5">{{ field.errors.0 }}</p>
                 {% endif %}
             </div>
 
             {% else %}
-            <!-- Regular text / email / password fields -->
-            <div class="field-group">
-                <label for="{{ field.id_for_label }}">
-                    {% if field.name == "username" %}<i class="fa-solid fa-user"></i>
-                    {% elif field.name == "email" %}<i class="fa-solid fa-envelope"></i>
-                    {% elif field.name == "password1" %}<i class="fa-solid fa-lock"></i>
-                    {% elif field.name == "password2" %}<i class="fa-solid fa-lock"></i>
+            <div class="form-group mb-20">
+                <label class="font-bold mb-8 block text-small" for="{{ field.id_for_label }}">
+                    {% if field.name == "username" %}<i class="fa-solid fa-user mr-5"></i>
+                    {% elif field.name == "email" %}<i class="fa-solid fa-envelope mr-5"></i>
+                    {% elif field.name == "password1" %}<i class="fa-solid fa-lock mr-5"></i>
+                    {% elif field.name == "password2" %}<i class="fa-solid fa-lock mr-5"></i>
                     {% endif %}
                     {{ field.label }}
                 </label>
-                {{ field }}
+                <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.html_name }}"
+                    id="{{ field.id_for_label }}" class="form-input" placeholder="Enter your {{ field.label|lower }}" required>
                 {% if field.errors %}
-                {% for error in field.errors %}
-                <p class="field-error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</p>
-                {% endfor %}
+                <p class="text-error text-small mt-5">{{ field.errors.0 }}</p>
                 {% endif %}
             </div>
             {% endif %}
             {% endfor %}
 
-            <button type="submit" class="register-btn" id="register-submit-btn">
-                <i class="fa-solid fa-rocket"></i>&nbsp; Initialize Account
+            <button type="submit" class="btn btn-primary btn-large mt-20">
+                <i class="fa-solid fa-rocket mr-5"></i> INITIALIZE ACCOUNT
             </button>
         </form>
 
-        <p class="signin-link">
-            Already a member? <a href="{% url 'login' %}">Sign In</a>
-        </p>
-
+        <div class="text-center mt-30 pt-20 border-top">
+            <p class="text-muted text-small">
+                Already a member? <a href="{% url 'login' %}" class="text-primary font-bold">Sign In</a>
+            </p>
+        </div>
     </div>
 </div>
 {% endblock %}

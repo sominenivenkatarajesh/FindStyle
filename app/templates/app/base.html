@@ -26,24 +26,17 @@
         </div>
         <div class="nav-actions">
             {% if user.is_authenticated %}
-            <div style="display:flex;align-items:center;gap:20px;">
-                <span style="color:var(--text-muted);font-size:0.9rem;">Welcome,
-                    <strong>{{ user.username }}</strong></span>
+            <div class="flex-center gap-20">
+                <span class="text-small text-muted">Welcome, <strong class="text-white">{{ user.username }}</strong></span>
                 {% if profile.role == 'seller' %}
-                <a href="{% url 'seller_dashboard' %}" class="nav-item" title="Seller Dashboard"><i
-                        class="fa-solid fa-store"></i>
-                    Seller</a>
+                <a href="{% url 'seller_dashboard' %}" class="nav-item" title="Seller Dashboard"><i class="fa-solid fa-store"></i> Seller</a>
                 {% else %}
-                <a href="{% url 'orders' %}" class="nav-item" title="Your Orders"><i class="fa-solid fa-box"></i>
-                    Orders</a>
-                <a href="{% url 'wishlist' %}" class="nav-item" title="Your Wishlist"><i class="fa-solid fa-heart"></i>
-                    Wishlist</a>
+                <a href="{% url 'orders' %}" class="nav-item" title="Your Orders"><i class="fa-solid fa-box"></i> Orders</a>
+                <a href="{% url 'wishlist' %}" class="nav-item" title="Your Wishlist"><i class="fa-solid fa-heart"></i> Wishlist</a>
                 {% endif %}
                 <form action="{% url 'logout' %}" method="post" style="display:inline;">
                     {% csrf_token %}
-                    <button type="submit" class="nav-item"
-                        style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-family:inherit;">Sign
-                        Out</button>
+                    <button type="submit" class="nav-item" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-family:inherit;">Sign Out</button>
                 </form>
             </div>
             {% else %}
@@ -91,11 +84,10 @@
         <div class="footer-container">
             <div class="footer-row">
                 <div class="footer-col about">
-                    <a href="{% url 'home' %}" class="nav-logo" style="margin-bottom: 20px;">
+                    <a href="{% url 'home' %}" class="nav-logo mb-20">
                         <i class="fa-solid fa-shirt"></i> findStyle
                     </a>
-                    <p>Elevate your style with curated fashion from around the globe. We bring you the latest trends
-                        with a touch of elegance.</p>
+                    <p>Elevate your style with curated fashion from around the globe. We bring you the latest trends with a touch of elegance.</p>
                     <div class="social-links">
                         <a href="#"><i class="fa-brands fa-instagram"></i></a>
                         <a href="#"><i class="fa-brands fa-twitter"></i></a>
@@ -105,7 +97,7 @@
                 </div>
 
                 <div class="footer-col">
-                    <h4>Shop</h4>
+                    <h4 class="text-uppercase text-white">Shop</h4>
                     <ul>
                         <li><a href="{% url 'product_list' %}">All Products</a></li>
                         <li><a href="{% url 'product_list' %}?category=men">Men's Fashion</a></li>
@@ -115,7 +107,7 @@
                 </div>
 
                 <div class="footer-col">
-                    <h4>Support</h4>
+                    <h4 class="text-uppercase text-white">Support</h4>
                     <ul>
                         <li><a href="#">Contact Us</a></li>
                         <li><a href="#">Shipping Policy</a></li>
@@ -123,17 +115,15 @@
                         <li><a href="#">FAQs</a></li>
                     </ul>
                 </div>
-
-
             </div>
 
             <div class="footer-bottom">
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px;">
-                <div class="footer-bottom-content">
-                    <p>&copy; 2026 findStyle. All rights reserved.</p>
-                    <div class="footer-legal">
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
+                <div class="footer-bottom-content flex-between">
+                    <p class="text-small text-muted">&copy; 2026 findStyle. All rights reserved.</p>
+                    <div class="footer-legal flex-center gap-20">
+                        <a href="#" class="text-small text-muted">Privacy Policy</a>
+                        <a href="#" class="text-small text-muted">Terms of Service</a>
                     </div>
                 </div>
             </div>
